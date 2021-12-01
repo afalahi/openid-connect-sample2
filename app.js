@@ -34,7 +34,7 @@ Issuer.discover(
     post_logout_redirect_uris: [`${process.env.REDIRECT_URL}/logout/callback`],
     token_endpoint_auth_method: 'client_secret_post', //make sure your client in IDC matches this setting. By default IDC uses basic auth for client authentication
   });
-
+  
   app.use(
     session({
       secret: 'keyboard cat',
@@ -88,7 +88,7 @@ app.use('/', indexRouter);
 
   // start logout request
   app.get('/logout', (req, res) => {
-    res.redirect(client.endSessionUrl({id_token_hint:req.user.id}));
+    res.redirect(client.endSessionUrl({id_token_hint:req.user.id_token}));
   });
 
   // logout callback

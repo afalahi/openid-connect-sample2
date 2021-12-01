@@ -40,7 +40,7 @@ Issuer.discover(
       secret: 'keyboard cat',
       resave: false,
       saveUninitialized: true,
-      name:'fr.nodejs.client',
+      name:'fr.nodejs.optik',
       cookie: {
         maxAge: 100 * 10 * 60 * 60 * 1,
       },

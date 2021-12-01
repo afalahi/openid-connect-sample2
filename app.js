@@ -25,8 +25,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 Issuer.discover(
-  process.env.IDC_TENANT || "https://dev-14436129.okta.com" //your IDC cloud am Oauth2 endpoint
-).then((okta) => {
+  process.env.IDC_TENANT
+).then(okta => {
   const client = new okta.Client({
     client_id: process.env.CLIENT_ID, //client ID for the express app client
     client_secret: process.env.CLIENT_SECRET, //client Secret for the express app client
@@ -40,7 +40,7 @@ Issuer.discover(
       secret: 'keyboard cat',
       resave: false,
       saveUninitialized: true,
-      name:'fr.nodejs.optik',
+      name: 'fr.nodejs.optik',
       cookie: {
         maxAge: 100 * 10 * 60 * 60 * 1,
       },
@@ -56,9 +56,9 @@ Issuer.discover(
       return done(null, tokenSet);
     })
   );
-app.use(locals);
-app.locals.decodedUser = null;
-app.use('/', indexRouter);
+  app.use(locals);
+  app.locals.decodedUser = null;
+  app.use('/', indexRouter);
   //handles serialization and deserialization of authenticated user
   passport.serializeUser(function (user, done) {
     done(null, user);
@@ -69,11 +69,9 @@ app.use('/', indexRouter);
 
   // start authentication request
   app.get('/auth', (req, res, next) => {
-    passport.authenticate('oidc', { scope: 'openid profile email offline_access' })(
-      req,
-      res,
-      next
-    );
+    passport.authenticate('oidc', {
+      scope: 'openid profile email',
+    })(req, res, next);
   });
 
   // authentication callback
@@ -88,13 +86,13 @@ app.use('/', indexRouter);
 
   // start logout request
   app.get('/logout', (req, res) => {
-    res.redirect(client.endSessionUrl({id_token_hint:req.user.id_token}));
+    res.redirect(client.endSessionUrl({ id_token_hint: req.user.id_token }));
   });
 
   // logout callback
   app.get('/logout/callback', (req, res) => {
     // clears the persisted user from the local storage
-    req.app.locals.decodedUser = null
+    req.app.locals.decodedUser = null;
     req.logout();
     // redirects the user to a public route
     res.redirect('/');

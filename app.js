@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 Issuer.discover(
-  process.env.IDC_TENANT //your IDC cloud am Oauth2 endpoint
+  process.env.IDC_TENANT || "https://dev-14436129.okta.com" //your IDC cloud am Oauth2 endpoint
 ).then((okta) => {
   const client = new okta.Client({
     client_id: process.env.CLIENT_ID, //client ID for the express app client
@@ -34,7 +34,7 @@ Issuer.discover(
     post_logout_redirect_uris: [`${process.env.REDIRECT_URL}/logout/callback`],
     token_endpoint_auth_method: 'client_secret_post', //make sure your client in IDC matches this setting. By default IDC uses basic auth for client authentication
   });
-  
+
   app.use(
     session({
       secret: 'keyboard cat',
@@ -94,6 +94,7 @@ app.use('/', indexRouter);
   // logout callback
   app.get('/logout/callback', (req, res) => {
     // clears the persisted user from the local storage
+    req.app.locals.decodedUser = null
     req.logout();
     // redirects the user to a public route
     res.redirect('/');

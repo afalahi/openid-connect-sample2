@@ -26,8 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 Issuer.discover(
   process.env.IDC_TENANT //your IDC cloud am Oauth2 endpoint
-).then((forgerock) => {
-  const client = new forgerock.Client({
+).then((okta) => {
+  const client = new okta.Client({
     client_id: process.env.CLIENT_ID, //client ID for the express app client
     client_secret: process.env.CLIENT_SECRET, //client Secret for the express app client
     redirect_uris: [`${process.env.REDIRECT_URL}/auth/callback`], //your sign in, callback or redirect url.
